@@ -1,6 +1,10 @@
 from pprint import pprint
 import letters
+
 import arcade
+
+START_X = 4
+START_Y = 1
 
 
 class Grid:
@@ -11,13 +15,31 @@ class Grid:
         self.grid = self.create_logic_grid()
         self.active_letter = letters.letter_T
         self.draw_letter()
+        self.rotation = 1
+
+    def letter_rotate(self):
+        self.remove_cell()
+        self.rotation += 1
+        if self.rotation > 4:
+            self.rotation = 1
+        rotation = self.active_letter[self.rotation]
+        for y in range(len(rotation)):
+            for x in range(len(rotation[y])):
+                if rotation[y][x] == 2:
+                    self.set_cell(x+START_X, y+START_Y, 2)
+
+    def remove_cell(self):
+        for y in range(self.height):
+            for x in range(self.width):
+                if self.get_cell(x, y) == 2:
+                    self.set_cell(x, y, 0)
 
     def draw_letter(self):
         rotation = self.active_letter[1]
         for y in range(len(rotation)):
             for x in range(len(rotation[y])):
                 if rotation[y][x] == 2:
-                    self.set_cell(x+4, y+1, 2)
+                    self.set_cell(x + START_X, y + START_Y, 2)
 
     def draw_all(self):
         self.draw_grid_lines()
@@ -27,13 +49,16 @@ class Grid:
         for y in range(self.height):
             for x in range(self.width):
                 if self.get_cell(x, y) == 1:
-                    arcade.draw_rectangle_filled(x * 64 + 32, (960 - 32) - y * 64, self.cube_size, self.cube_size, arcade.color.WHITE)
-                    arcade.draw_rectangle_outline(x * 64 + 32, (960 - 32) - y * 64, self.cube_size, self.cube_size, arcade.color.BLACK)
+                    arcade.draw_rectangle_filled(x * 64 + 32, (960 - 32) - y * 64, self.cube_size, self.cube_size,
+                                                 arcade.color.WHITE)
+                    arcade.draw_rectangle_outline(x * 64 + 32, (960 - 32) - y * 64, self.cube_size, self.cube_size,
+                                                  arcade.color.BLACK)
                 if self.get_cell(x, y) == 2:
                     arcade.draw_rectangle_filled(x * 64 + 32, (960 - 32) - y * 64, self.cube_size, self.cube_size,
                                                  self.active_letter["color"])
                     arcade.draw_rectangle_outline(x * 64 + 32, (960 - 32) - y * 64, self.cube_size, self.cube_size,
                                                   arcade.color.BLACK)
+
     def draw_grid_lines(self):
         for x in range(self.width):
             arcade.draw_lines([[x * self.cube_size, 0], [x * self.cube_size, 960]], arcade.color.WHITE, 1)
@@ -56,6 +81,9 @@ class Grid:
 
     def set_cell(self, x, y, value):
         self.grid[y][x] = value
+
+
+
 
 if __name__ == "__main__":
     g = Grid()

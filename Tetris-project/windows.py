@@ -13,5 +13,9 @@ class TetrisWindow(arcade.Window):
         self.grid.draw_all()
 
 
+    def on_key_press(self, symbol: int, modifiers: int):
+        if symbol == arcade.key.R:
+            self.grid.letter_rotate()
+
 win = TetrisWindow(1024, 960, "Tetris")
 arcade.run()
